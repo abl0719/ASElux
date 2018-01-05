@@ -1,4 +1,4 @@
-ASElux="../ASElux_1.0"
+ASElux="../ASElux"
 
 #build the static index for ASElux
 $ASElux build --gtf annotation.gtf --ref genome.fa --out demo

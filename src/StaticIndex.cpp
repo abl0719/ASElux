@@ -16,6 +16,7 @@
 StaticIndex::StaticIndex(string gtf_file, string genome_file){
     //create genome annotation
     m_annotation = new Annotation(gtf_file);
+    cout << "annotation created...\n";
     //load genome sequence
     ifstream in_file(genome_file);
     string line;
@@ -41,6 +42,8 @@ StaticIndex::StaticIndex(string gtf_file, string genome_file){
     string new_genome;
     for(auto gene_temp:(m_annotation->m_gene_list)){
         auto seq = genome_temp.find(gene_temp.m_chr);
+	if (seq == genome_temp.end())
+	    continue;
         string seq_temp = seq->second.substr(gene_temp.m_start-1, gene_temp.m_end-gene_temp.m_start+1);
         new_genome.append(seq_temp);
         new_genome.append(" ");

@@ -75,6 +75,8 @@ Annotation::Annotation(string gtf_file){
     transcript* temp_transcript = nullptr;
     if (in_file.is_open()){
         while ( getline (in_file,line)){
+	    if (line[0] == '#')
+		continue;
             vector<string> data;
             split_str(line, '\t', data);
             int start = stoi(data[3]);

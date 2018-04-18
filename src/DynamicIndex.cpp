@@ -26,8 +26,8 @@ DynamicIndex::~DynamicIndex(){
         delete target.first;
 }
 
-DynamicIndex::DynamicIndex(string vcf_file, StaticIndex* static_index, int len, string mis_allowed):
-m_static_index(static_index), m_read_len(len){
+DynamicIndex::DynamicIndex(string vcf_file, StaticIndex* static_index, int len, string mis_allowed, Parameters* p):
+m_static_index(static_index), m_read_len(len), m_p(p){
     // load vcf file
     ifstream in_file(vcf_file);
     string line;
@@ -349,7 +349,7 @@ bool DynamicIndex::align_paired(const string &read1, const string &read2, unorde
             }
         }
 //        cout << "gene read 1:" << all_gene.size() << endl;
-        // output result
+        // output result normally
         if (all_gene.size() ==  1) {
             Genotype snp;
             set<string> done_snps;
@@ -376,6 +376,8 @@ bool DynamicIndex::align_paired(const string &read1, const string &read2, unorde
                     result[snp.m_id][snp.m_geno] ++;
                 }
                 m_lock.unlock();
+                if (m_p->count_once())
+                    break;
             }
         }
     }
@@ -460,6 +462,8 @@ bool DynamicIndex::align_paired(const string &read1, const string &read2, unorde
                     result[snp.m_id][snp.m_geno] ++;
                 }
                 m_lock.unlock();
+                if (m_p->count_once())
+                    break;
             }
         }
     }
@@ -528,6 +532,8 @@ void DynamicIndex::align_single(const string &read, unordered_map<string, int *>
                     result[snp.m_id][snp.m_geno] ++;
                 }
                 m_lock.unlock();
+                if (m_p->count_once())
+                    break;
             }
         }
     }

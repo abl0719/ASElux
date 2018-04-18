@@ -20,8 +20,8 @@ void Alignment::output_result(string file_name){
     outfile.close();
 }
 
-Alignment::Alignment(DynamicIndex* index, int n)
-:m_dynamic_index(index), m_threadn(n){}
+Alignment::Alignment(DynamicIndex* index, int n, Parameters* p)
+:m_dynamic_index(index), m_threadn(n), m_p(p){}
 
 void wrapper_single(Alignment* this_class, const string& read){
     this_class->m_dynamic_index->align_single(read, this_class->m_result, this_class->m_mtx);

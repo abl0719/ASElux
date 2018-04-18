@@ -28,9 +28,9 @@ int main(int argc,  char** argv){
         StaticIndex * static_index = new StaticIndex(p.get_par("--index"));
         int read_len = stoi(p.get_par("--readLen"));
         cout << "Building dynamic index... " << endl;
-        DynamicIndex * dynamic_index = new DynamicIndex(p.get_par("--vcf"), static_index, read_len, p.get_par("--mis"));
+        DynamicIndex * dynamic_index = new DynamicIndex(p.get_par("--vcf"), static_index, read_len, p.get_par("--mis"), &p);
         int thread_n = stoi(p.get_par("--nthread"));
-        Alignment* align = new Alignment(dynamic_index, thread_n);
+        Alignment* align = new Alignment(dynamic_index, thread_n, &p);
         cout << "Start alignment... " << endl;
         auto read_files = p.get_read_files();
         if (p.is_pe()){

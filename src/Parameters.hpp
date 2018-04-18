@@ -30,6 +30,9 @@ public:
     bool is_pe(){
         return m_b_paramter["--pe"];
     }
+    bool count_once(){
+        return m_b_paramter["--count_once"];
+    }
     vector<string>& get_read_files(){
         return m_read_file;
     }

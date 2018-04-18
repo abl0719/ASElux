@@ -11,13 +11,14 @@
 
 #include <stdio.h>
 #include "DynamicIndex.hpp"
+#include "Parameters.hpp"
 #include "ThreadPool.h"
 #include "BinaryFile.h"
 #include <assert.h>
 
 class Alignment{
 public:
-    Alignment(DynamicIndex* index, int n);
+    Alignment(DynamicIndex* index, int n, Parameters* p);
     ~Alignment(){
         delete m_dynamic_index;
         for(auto target:m_result)
@@ -40,6 +41,7 @@ public:
 private:
 //    DynamicIndex* m_dynamic_index;
     int m_threadn;
+    Parameters* m_p;
     
     
 };

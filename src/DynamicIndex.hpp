@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "StaticIndex.hpp"
 #include "IndexedSA.hpp"
+#include "Parameters.hpp"
 #include <vector>
 #include <sstream>
 #include "Funtions.hpp"
@@ -46,7 +47,7 @@ public:
         Genotype(){}
     };
     
-    DynamicIndex(string vcf_file, StaticIndex* static_index, int len, string mis_allowed);
+    DynamicIndex(string vcf_file, StaticIndex* static_index, int len, string mis_allowed, Parameters* p);
     ~DynamicIndex();
     void output_txt(string file_name);
     
@@ -84,6 +85,7 @@ private:
     
     //add for transcript base dynamic index
     bool locate_ASE_region(const SNP& snp, Annotation::transcript trans, pair<string, vector<pair<int, int>>>& ASE_regions);
+    Parameters* m_p;
 };
 
 #endif /* DynamicIndex_hpp */

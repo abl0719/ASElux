@@ -29,6 +29,7 @@ Parameters::Parameters(int argc,  char** argv){
     m_b_paramter.insert({"--fa",false});
     m_b_paramter.insert({"--se",false});
     m_b_paramter.insert({"--pe",false});
+    m_b_paramter.insert({"--count_once",false});
     if (argc < 2)
         return;
     m_runMode = string(argv[1]);

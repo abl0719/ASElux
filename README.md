@@ -106,11 +106,13 @@ run mode:
     n       the number of threads used during alignment (default = 1).
 
 Update: 2018.04.17
-In the default align mode, the read counts are SNP based which means that a read
+In the default alignment mode, the read counts are SNP based which means that a read
 can be counted multiple times if there are more than one SNP existing in the
-read. We now offers a new option to count the reads for only one SNP in the read.
+read. We now offers a new option to count the reads toward only one random SNP in the
+read.
 
 New parameter:
+
 --count_once
-    if the flag is used, one read would only be counted once no matter how many 
-    SNPs are in the read.
+    for the reads that countain multiple SNPs, ASElux randomly pick one SNP in 
+    the read and count towards that SNP to avoid the double counting problem.

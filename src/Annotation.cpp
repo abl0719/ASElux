@@ -127,6 +127,8 @@ Annotation::Annotation(string gtf_file){
     //reverse exons if they are in the - strand
     for (auto&& g:m_gene_list){
         for (auto&& tr:g.m_transcripts){
+            if (tr.m_exons.empty())
+                continue;
             if (tr.m_exons.front().first > tr.m_exons.back().first){
                 reverse(tr.m_exons.begin(), tr.m_exons.end());
             }

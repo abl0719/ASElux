@@ -173,7 +173,7 @@ m_static_index(static_index), m_read_len(len), m_p(p){
             }
         }
     }
-    m_ASE_reads = new IndexedSA(ASE_reads, 20);
+    m_ASE_reads = new IndexedSA(ASE_reads, 10);
     m_ASE_reads->set_mis(mis_allowed);
 }
 
@@ -295,6 +295,9 @@ int DynamicIndex::locus_info(const unsigned int &posi, uint16_t& gene_id, int& d
 
 bool DynamicIndex::align_paired(const string &read1, const string &read2, unordered_map<string, int *> &result, mutex& m_lock){
     bool debug = false;
+    if (read1.length() < m_read_len || read2.length() < m_read_len){
+        return debug;
+    }
 //    return;
     //treat read1 as the main read
     vector<unsigned int>* m_main_posi = new vector<unsigned int>;
@@ -472,7 +475,10 @@ bool DynamicIndex::align_paired(const string &read1, const string &read2, unorde
 //    cout << "alignment ends\n";
 }
 
-void DynamicIndex::align_single(const string &read, unordered_map<string, int *> &result, mutex& m_lock){
+int DynamicIndex::align_single(const string &read, unordered_map<string, int *> &result, mutex& m_lock){
+    if (read.length() < m_read_len){
+        return 0;
+    }
     vector<unsigned int>* m_main_posi = new vector<unsigned int>;
     int aligned_l = m_ASE_reads->quick_search(read.c_str(), m_read_len, m_main_posi);
     if (aligned_l == m_read_len){
@@ -503,7 +509,7 @@ void DynamicIndex::align_single(const string &read, unordered_map<string, int *>
         for (auto f_read:same_reads){
             m_static_index->global_align(f_read, m_read_len, f_gene, b_gene);
         }
-        // align the paired read
+        // combine all directions
         for (auto gene:f_gene) {
             all_gene.insert(gene);
         }
@@ -535,9 +541,16 @@ void DynamicIndex::align_single(const string &read, unordered_map<string, int *>
                 if (m_p->count_once())
                     break;
             }
+            delete m_main_posi;
+            return 1;
+        }else{
+            delete m_main_posi;
+            return 2;
         }
+    }else{
+//        cout << aligned_l << "\t" << m_read_len << endl;
+        return 3;
     }
-    delete m_main_posi;
 }
 
 bool DynamicIndex::locate_ASE_region(const SNP& snp, Annotation::transcript trans, pair<string, vector<pair<int, int>>>& ASE_regions){

@@ -52,7 +52,7 @@ public:
     void output_txt(string file_name);
     
     bool align_paired(const string& read1, const string& read2, unordered_map<string, int*>& result, mutex& m_lock);
-    void align_single(const string& read, unordered_map<string, int*>& result, mutex& m_lock);
+    int align_single(const string& read, unordered_map<string, int*>& result, mutex& m_lock);
     
 private:
     int m_read_len;

@@ -27,10 +27,11 @@ void wrapper_single(Alignment* this_class, const string& read){
     this_class->m_dynamic_index->align_single(read, this_class->m_result, this_class->m_mtx);
 }
 
-void wrapper_single_vector(Alignment* this_class, const vector<string>* reads){
+void wrapper_single_vector(Alignment* this_class, const vector<string>* reads, int result_static[]){
     for (string read: *reads){
         transform(read.begin(), read.end(), read.begin(), ::toupper);
-        this_class->m_dynamic_index->align_single(read, this_class->m_result, this_class->m_mtx);
+        int result = this_class->m_dynamic_index->align_single(read, this_class->m_result, this_class->m_mtx);
+        result_static[result] ++;
     }
     delete reads;
 }
@@ -114,17 +115,18 @@ void Alignment::align_single(string file, bool is_fq){
     unsigned long line_i = 0;
     BinaryFile::Offset index = 0;
     string residual;
+    int output_static[10] = {0};
     if (m_threadn > 1){
         ThreadPool m_pool(m_threadn);
         while (index < b_file.fileLength()){
             vector<string>* reads_box = fetch_reads(b_file, index, residual, read_n, line_i, is_fq);
-            m_pool.enqueue(wrapper_single_vector, this, reads_box);
+            m_pool.enqueue(wrapper_single_vector, this, reads_box, output_static);
 //            wrapper_single_vector(this, reads_box);
         }
     }else{
         while (index < b_file.fileLength()){
             vector<string>* reads_box = fetch_reads(b_file, index, residual, read_n, line_i, is_fq);
-            wrapper_single_vector(this, reads_box);
+            wrapper_single_vector(this, reads_box, output_static);
         }
     }
     time_t end_t;
@@ -133,6 +135,10 @@ void Alignment::align_single(string file, bool is_fq){
     cout << "Processed " << read_n << " reads" << endl;
     double speed = ((double) read_n)/seconds;
     cout << "average speed is: " << speed << "reads/s" << endl;
+//    cout << "debug: output static\n";
+//    for (int i=0; i < 10; ++i){
+//        cout << i << "\t: " << output_static[i] << endl;
+//    }
 }
 
 void Alignment::align_paired(string file_read1, string file_read2, bool is_fq){

@@ -26,6 +26,7 @@ StaticIndex::StaticIndex(string gtf_file, string genome_file){
         while ( getline (in_file,line)){
             if (line.substr(0,1) == ">"){
                 chr = line.substr(1,(line.length()-1));
+                chr = chr.substr(0, chr.find(' '));
                 continue;
             }
             transform(line.begin(), line.end(), line.begin(), ::toupper);
@@ -181,10 +182,13 @@ int StaticIndex::masked_search(const char *read, unsigned int read_l, vector<uns
         return 0;
     long r = m_genome_index->m_length -1;
     long l = 0;
+    // if l or r is in the masked genes, push the bundry
+    for (;l <= r && locate_in_gene(m_genome_index->m_sarray[l], genes);++l){}
+    for (;l <= r && locate_in_gene(m_genome_index->m_sarray[r], genes);--r){}
+    
     long mid = (r+l)/2;
     int matched_l = 1;
     unsigned int result[2] = {0, 0};
-    //    cout << "stage 0" << endl;
     while(l <= r && matched_l <= read_l){
         for (;locate_in_gene(m_genome_index->m_sarray[mid], genes);
              ++mid){}
@@ -195,17 +199,16 @@ int StaticIndex::masked_search(const char *read, unsigned int read_l, vector<uns
             matched_l ++;
         }else if(c < 0){
             l = mid + 1;
-            for (;locate_in_gene(m_genome_index->m_sarray[l], genes);
+            for (;l <= r && locate_in_gene(m_genome_index->m_sarray[l], genes);
                  ++l){}
             mid = (l+r)/2;
         }else{
             r = mid-1;
-            for (;locate_in_gene(m_genome_index->m_sarray[r], genes);
+            for (;l <= r && locate_in_gene(m_genome_index->m_sarray[r], genes);
                  --r){}
             mid = (l+r)/2;
         }
     }
-    //    cout << "stage 1" << endl;
     if (result[1] < m_genome_index->m_anchor_l){return result[1];}
     posi->push_back(m_genome_index->m_sarray[result[0]]);
     if (result[0] + 1 < m_genome_index->m_length){
@@ -218,7 +221,6 @@ int StaticIndex::masked_search(const char *read, unsigned int read_l, vector<uns
             posi->push_back(m_genome_index->m_sarray[result[0] - i]);
         }
     }
-    //    cout << "stage 2" << endl;
     return result[1];
 }
 

@@ -87,7 +87,7 @@ run mode:
     file    the name of the static index
 
 --vcf
-    file    the file of vcf format SNPs
+    file    the file of vcf format SNPs. Please make sure that vcf file fits the v4.2 standards and contains the GT field.
 
 --seqFiles
     file    the files of reads seperated by space. 
